@@ -1,0 +1,9 @@
+name: SplatFlag
+main: co.obam.ismooch.splatflag.SplatFlag
+version: 1.0
+author: iSmooch
+
+commands:
+  sf:
+    description: Used to do game stuff
+    usage: /<command>
