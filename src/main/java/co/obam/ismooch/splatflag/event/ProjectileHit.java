@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -21,6 +22,10 @@ public class ProjectileHit implements Listener {
         if (e.getDamager() instanceof Snowball && ((Snowball) e.getDamager()).getShooter() instanceof Player) {
             ball = (Projectile) e.getDamager();
             player = (Player) ball.getShooter();
+
+            ItemStack is = new ItemStack(Material.BANNER);
+            ItemMeta im = is.getItemMeta();
+
 
 
 

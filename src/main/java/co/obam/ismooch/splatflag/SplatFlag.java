@@ -4,6 +4,7 @@ import co.obam.ismooch.splatflag.event.Click;
 import co.obam.ismooch.splatflag.event.PickUp;
 import co.obam.ismooch.splatflag.event.ProjectileHit;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.block.Banner;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,12 +25,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Team;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 
 public class SplatFlag extends JavaPlugin implements Listener {
@@ -226,6 +230,7 @@ public class SplatFlag extends JavaPlugin implements Listener {
     }
 
     public static void spawnTeam1(Player p){
+
 
         int red = 255;
         int green = 195;
@@ -605,6 +610,8 @@ public class SplatFlag extends JavaPlugin implements Listener {
                     if(e instanceof Player){
 
                         Player p = (Player) e;
+
+
 
                         if(playerShields.contains(p)){
 

@@ -1,0 +1,27 @@
+World: Example
+  Colors:
+    Team1: Blue
+    Team2: Orange
+    Armor1: 1:2:3
+    Armor2: 1:2:3
+
+Sizes:
+  - Large
+  - Medium
+  - Small
+
+Locations:
+  Banner1: 0:64:0
+  Banner2: 0:64:0
+  PowerupSpawns:
+    - 0:64:0
+    - 0:64:0
+    - 0:64:0
+  Team1Spawns:
+    - 0:64:0
+    - 0:64:0
+    - 0:64:0
+  Team2Spawns:
+    - 0:64:0
+    - 0:64:0
+    - 0:64:0
