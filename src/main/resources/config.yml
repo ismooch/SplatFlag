@@ -3,4 +3,12 @@ Flagstone:
   y: 0
   z: 0
 SplatMaps:
- - SMExample
+  - SMExample
+Lobbies:
+  -lobby1
+lobby-locations:
+  lobby1: world:0:64:0
+lobby-signs:
+  lobby1:
+lobby-size:
+  lobby1: medium

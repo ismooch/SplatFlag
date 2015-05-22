@@ -18,7 +18,7 @@ import java.util.List;
 public class SplatMapBuilder {
 
 
-    public SplatMap createMap(String name){
+    public static SplatMap createMap(String name) {
 
         System.out.println("[SplatFlag] Generating new instance for SplatMap " + name);
 
@@ -45,7 +45,6 @@ public class SplatMapBuilder {
         Bukkit.createWorld(new WorldCreator(worldname));
 
 
-
         World targetWorld = Bukkit.getWorld(worldname);
 
         File target = targetWorld.getWorldFolder();
@@ -64,19 +63,19 @@ public class SplatMapBuilder {
         List<Location> team1Spawn = new ArrayList<Location>();
         List<Location> team2Spawn = new ArrayList<Location>();
 
-        for(Location loc : MapLoader.splatTeam1Spawns.get(name)){
+        for (Location loc : MapLoader.splatTeam1Spawns.get(name)) {
 
             team1Spawn.add(flipWorld(ref, loc));
 
         }
 
-        for(Location loc : MapLoader.splatTeam2Spawns.get(name)){
+        for (Location loc : MapLoader.splatTeam2Spawns.get(name)) {
 
             team2Spawn.add(flipWorld(ref, loc));
 
         }
 
-        for(Location loc : MapLoader.splatPowerSpawns.get(name)){
+        for (Location loc : MapLoader.splatPowerSpawns.get(name)) {
 
             powerUps.add(flipWorld(ref, loc));
 
@@ -108,43 +107,41 @@ public class SplatMapBuilder {
         return map;
     }
 
-    public Location flipWorld(World world, Location loc){
+    public static Location flipWorld(World world, Location loc) {
 
         return new Location(world, loc.getX(), loc.getY(), loc.getZ());
 
     }
 
 
-
-
-    public void unloadWorld(World world) {
-        if(world != null) {
+    public static void unloadWorld(World world) {
+        if (world != null) {
             Bukkit.getServer().unloadWorld(world, true);
         }
     }
 
 
-    public boolean deleteWorld(File path) {
-        if(path.exists()) {
+    public static boolean deleteWorld(File path) {
+        if (path.exists()) {
             File files[] = path.listFiles();
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
                     deleteWorld(files[i]);
                 } else {
                     files[i].delete();
                 }
             }
         }
-        return(path.delete());
+        return (path.delete());
     }
 
 
-    public void copyWorld(File source, File target){
+    public static void copyWorld(File source, File target) {
         try {
             ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
-            if(!ignore.contains(source.getName())) {
-                if(source.isDirectory()) {
-                    if(!target.exists()) {
+            if (!ignore.contains(source.getName())) {
+                if (source.isDirectory()) {
+                    if (!target.exists()) {
 
                         target.mkdirs();
 
@@ -172,7 +169,6 @@ public class SplatMapBuilder {
 
         }
     }
-
 
 
 }

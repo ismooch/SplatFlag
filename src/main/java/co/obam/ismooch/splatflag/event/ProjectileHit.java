@@ -27,10 +27,6 @@ public class ProjectileHit implements Listener {
             ItemMeta im = is.getItemMeta();
 
 
-
-
-
-
             if (e.getEntity() instanceof Chicken) {
 
                 if (SplatFlag.powerUpHit.containsKey(e.getEntity().getUniqueId())) {
@@ -58,8 +54,9 @@ public class ProjectileHit implements Listener {
                         e.getEntity().remove();
                         if (SplatFlag.team1.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Shield " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Shield " +
+                                            ChatColor.GREEN + "powerup for your team!");
                             for (Player p : SplatFlag.team1) {
 
                                 SplatFlag.playerShields.add(p);
@@ -83,8 +80,9 @@ public class ProjectileHit implements Listener {
 
                         } else if (SplatFlag.team2.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Shield " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Shield " +
+                                            ChatColor.GREEN + "powerup for your team!");
                             for (Player p : SplatFlag.team2) {
 
                                 SplatFlag.playerShields.add(p);
@@ -140,8 +138,9 @@ public class ProjectileHit implements Listener {
                         e.getEntity().remove();
                         if (SplatFlag.team1.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Reload " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Reload " +
+                                            ChatColor.GREEN + "powerup for your team!");
                             for (Player p : SplatFlag.team1) {
 
                                 p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 64));
@@ -166,8 +165,9 @@ public class ProjectileHit implements Listener {
 
                         } else if (SplatFlag.team2.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Reload " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Reload " +
+                                            ChatColor.GREEN + "powerup for your team!");
                             for (Player p : SplatFlag.team2) {
 
                                 p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 64));
@@ -224,8 +224,9 @@ public class ProjectileHit implements Listener {
                         e.getEntity().remove();
                         if (SplatFlag.team1.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Respawn " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Respawn " +
+                                            ChatColor.GREEN + "powerup for your team!");
 
                             SplatFlag.team1Respawn = 10;
 
@@ -236,7 +237,8 @@ public class ProjectileHit implements Listener {
                                 if (!p.equals(player)) {
 
                                     p.sendRawMessage(
-                                            ChatColor.GREEN + "Your team has received a " + ChatColor.GOLD + "Respawn " +
+                                            ChatColor.GREEN + "Your team has received a " + ChatColor.GOLD +
+                                                    "Respawn " +
                                                     ChatColor.GREEN + " power up from " + ChatColor.YELLOW +
                                                     player.getName());
 
@@ -257,7 +259,7 @@ public class ProjectileHit implements Listener {
 
 
                                     SplatFlag.team1Respawn = 15;
-                                    for(Player p : SplatFlag.team1){
+                                    for (Player p : SplatFlag.team1) {
 
                                         p.sendRawMessage(ChatColor.GOLD + "Your respawn powerup has worn off!");
 
@@ -268,8 +270,9 @@ public class ProjectileHit implements Listener {
 
                         } else if (SplatFlag.team2.contains(player)) {
 
-                            player.sendRawMessage(ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Respawn " +
-                                    ChatColor.GREEN + "powerup for your team!");
+                            player.sendRawMessage(
+                                    ChatColor.GREEN + "You have acquired a " + ChatColor.GOLD + "Respawn " +
+                                            ChatColor.GREEN + "powerup for your team!");
 
                             SplatFlag.team2Respawn = 10;
 
@@ -280,7 +283,8 @@ public class ProjectileHit implements Listener {
                                 if (!p.equals(player)) {
 
                                     p.sendRawMessage(
-                                            ChatColor.GREEN + "Your team has received a " + ChatColor.GOLD + "Respawn " +
+                                            ChatColor.GREEN + "Your team has received a " + ChatColor.GOLD +
+                                                    "Respawn " +
                                                     ChatColor.GREEN + " power up from " + ChatColor.YELLOW +
                                                     player.getName());
 
@@ -300,7 +304,7 @@ public class ProjectileHit implements Listener {
 
 
                                     SplatFlag.team2Respawn = 15;
-                                    for(Player p : SplatFlag.team1){
+                                    for (Player p : SplatFlag.team1) {
 
                                         p.sendRawMessage(ChatColor.GOLD + "Your respawn powerup has worn off!");
 
@@ -408,13 +412,14 @@ public class ProjectileHit implements Listener {
                     player.playSound(player.getLocation(), Sound.SLIME_WALK, 10, -1);
                     ((Player) e.getEntity()).playSound(e.getEntity().getLocation(), Sound.SLIME_WALK, 10, -1);
 
-                    if(SplatFlag.playerShields.contains((Player) e.getEntity())){
+                    if (SplatFlag.playerShields.contains((Player) e.getEntity())) {
 
                         SplatFlag.playerShields.remove((Player) e.getEntity());
                         ((Player) e.getEntity()).sendRawMessage(ChatColor.RED + "Your shield has been broken!");
-                        player.sendRawMessage(ChatColor.GREEN + "You have broken the shield of " + ChatColor.YELLOW + ((Player) e.getEntity()).getDisplayName() + ChatColor.GREEN + "!");
+                        player.sendRawMessage(ChatColor.GREEN + "You have broken the shield of " + ChatColor.YELLOW +
+                                ((Player) e.getEntity()).getDisplayName() + ChatColor.GREEN + "!");
 
-                    }else if (SplatFlag.playerHit.containsKey(e.getEntity())) {
+                    } else if (SplatFlag.playerHit.containsKey(e.getEntity())) {
 
                         if (!SplatFlag.playerDeaths.containsKey(e.getEntity())) {
 
@@ -632,16 +637,18 @@ public class ProjectileHit implements Listener {
 
                         ((Player) e.getEntity()).getInventory().clear();
 
-                        if(SplatFlag.team1.contains((Player) e.getEntity())){
+                        if (SplatFlag.team1.contains((Player) e.getEntity())) {
 
                             ((Player) e.getEntity()).sendRawMessage(
-                                    ChatColor.GREEN + "You will respawn in " + ChatColor.YELLOW + SplatFlag.team1Respawn + ChatColor.GREEN +
+                                    ChatColor.GREEN + "You will respawn in " + ChatColor.YELLOW +
+                                            SplatFlag.team1Respawn + ChatColor.GREEN +
                                             " seconds!");
 
-                        }else if(SplatFlag.team2.contains((Player) e.getEntity())){
+                        } else if (SplatFlag.team2.contains((Player) e.getEntity())) {
 
                             ((Player) e.getEntity()).sendRawMessage(
-                                    ChatColor.GREEN + "You will respawn in " + ChatColor.YELLOW + SplatFlag.team2Respawn + ChatColor.GREEN +
+                                    ChatColor.GREEN + "You will respawn in " + ChatColor.YELLOW +
+                                            SplatFlag.team2Respawn + ChatColor.GREEN +
                                             " seconds!");
 
 

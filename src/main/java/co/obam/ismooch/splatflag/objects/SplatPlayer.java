@@ -20,26 +20,36 @@ public class SplatPlayer {
     private int team;
     private DyeColor color;
     private List<Integer> armorColor = new ArrayList<Integer>();
+    private int kills;
+    private int assists;
+    private int killStreak;
+    private int returns;
+    private int deaths;
+    private int powerups;
+    private int defends;
+    private int protects;
+    private int captures;
+    private boolean shield;
 
     private SplatMap splatMap;
 
 
-    private Map<Player, SplatPlayer> splatPlayers = new HashMap<Player, SplatPlayer>();
+    public static Map<Player, SplatPlayer> splatPlayers = new HashMap<Player, SplatPlayer>();
 
-    private SplatPlayer(Player p){
+    private SplatPlayer(Player p) {
 
         player = p;
         splatPlayers.put(p, this);
 
     }
 
-    public SplatPlayer getInstanceOfPlayer(Player p){
+    public static SplatPlayer getInstanceOfPlayer(Player p) {
 
-        if(!splatPlayers.containsKey(p)){
+        if (!splatPlayers.containsKey(p)) {
 
             return new SplatPlayer(p);
 
-        }else{
+        } else {
 
             return splatPlayers.get(p);
 
@@ -47,19 +57,19 @@ public class SplatPlayer {
 
     }
 
-    public void setTeam(int team){
+    public void setTeam(int team) {
 
         this.team = team;
 
     }
 
-    public int getTeam(){
+    public int getTeam() {
 
         return team;
 
     }
 
-    public void setArmorColor(List<Integer> colors){
+    public void setArmorColor(List<Integer> colors) {
 
         int Red = 0;
         int Green = 1;
@@ -71,43 +81,161 @@ public class SplatPlayer {
 
     }
 
-    public List<Integer> getArmorColor(){
+    public List<Integer> getArmorColor() {
 
         return armorColor;
 
     }
 
-    public void setColor(DyeColor color){
+    public void setColor(DyeColor color) {
 
         this.color = color;
 
     }
 
-    public DyeColor getColor(){
+    public DyeColor getColor() {
 
         return color;
 
     }
 
-    public Player getPlayer(){
+    public Player getPlayer() {
 
         return player;
 
     }
 
-    public SplatMap getSplatMap(){
+    public SplatMap getSplatMap() {
 
         return splatMap;
 
     }
 
-    public void setSplatMap(SplatMap sm){
+    public void setSplatMap(SplatMap sm) {
 
         splatMap = sm;
 
     }
 
+    public void setKills(int i) {
 
+        kills = i;
+
+    }
+
+    public void setAssists(int i) {
+
+        assists = i;
+
+    }
+
+    public void setReturns(int i) {
+
+        returns = i;
+
+    }
+
+    public void setKillStreak(int i) {
+
+        killStreak = i;
+
+    }
+
+    public void setDeaths(int i) {
+
+        deaths = i;
+
+    }
+
+    public void setPowerups(int i) {
+
+        powerups = i;
+
+    }
+
+    public void setDefends(int i) {
+
+        defends = i;
+
+    }
+
+    public void setProtects(int i) {
+
+        protects = i;
+
+    }
+
+    public void setCaptures(int i) {
+
+        captures = i;
+
+    }
+
+    public int getKills() {
+
+        return kills;
+
+    }
+
+    public int getAssists() {
+
+        return assists;
+
+    }
+
+    public int getReturns() {
+
+        return returns;
+
+    }
+
+    public int getKillStreak() {
+
+        return killStreak;
+
+    }
+
+    public int getDeaths() {
+
+        return deaths;
+
+    }
+
+    public int getPowerups() {
+
+        return powerups;
+
+    }
+
+    public int getDefends() {
+
+        return defends;
+
+    }
+
+    public int getProtects() {
+
+        return protects;
+
+    }
+
+    public int getCaptures() {
+
+        return captures;
+
+    }
+
+    public boolean hasShield() {
+
+        return shield;
+
+    }
+
+    public void setShield(boolean b) {
+
+        shield = b;
+
+    }
 
 
 }

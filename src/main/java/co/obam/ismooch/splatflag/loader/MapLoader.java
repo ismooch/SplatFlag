@@ -34,23 +34,23 @@ public class MapLoader {
     public static List<String> splatMapSmall = new ArrayList<String>();
 
 
+    public static void loadWorlds() {
 
-    public static void loadWorlds(){
 
+        for (String world : SplatFlag.getPlugin().getConfig().getStringList("SplatMaps")) {
 
-        for(String world : SplatFlag.getPlugin().getConfig().getStringList("SplatMaps")){
-
-            if(Bukkit.getWorld(world) == null){
+            if (Bukkit.getWorld(world) == null) {
 
                 File worldFile = new File(Bukkit.getServer().getWorldContainer(), world);
 
-                if(worldFile.exists()){
+                if (worldFile.exists()) {
 
                     Bukkit.getServer().createWorld(new WorldCreator(world));
 
-                }else{
+                } else {
 
-                    System.out.println("[SplatFlag] " + ChatColor.RED + "Error:" + ChatColor.WHITE + " Could not find world file for " + world + "!");
+                    System.out.println("[SplatFlag] " + ChatColor.RED + "Error:" + ChatColor.WHITE +
+                            " Could not find world file for " + world + "!");
 
                 }
 
@@ -61,7 +61,8 @@ public class MapLoader {
         findMaps();
 
     }
-    public static void findMaps(){
+
+    public static void findMaps() {
 
         int i = 0;
         int x = 0;
@@ -70,95 +71,96 @@ public class MapLoader {
         int Red = 0;
         int Green = 1;
         int Blue = 2;
-        for(World w : Bukkit.getWorlds()){
+        for (World w : Bukkit.getWorlds()) {
 
             String wname = w.getName();
 
-            if(wname.contains("SM")){
+            if (wname.contains("SM")) {
 
                 System.out.println("[SplatFlag] Looks like I found a world: " + wname);
                 System.out.println("[SplatFlag] I will try to load " + wname);
                 Plugin p = SplatFlag.getPlugin();
                 File config = new File(p.getDataFolder(), "" + wname + ".yml");
 
-                if(config.exists()){
+                if (config.exists()) {
 
                     YamlConfiguration mapConfig = YamlConfiguration.loadConfiguration(config);
                     System.out.println("[SplatFlag] Found config for " + mapConfig.getString("Name"));
                     String mapName = mapConfig.getString("Name");
 
-                    System.out.println("[SplatFlag] Found " + mapConfig.getStringList("Locations.Team1Spawns").size() + " spawns for Team 1 for map. Attempting to load...");
+                    System.out.println("[SplatFlag] Found " + mapConfig.getStringList("Locations.Team1Spawns").size() +
+                            " spawns for Team 1 for map. Attempting to load...");
 
                     List<Location> spawnOne = new ArrayList<Location>();
                     List<Location> spawnTwo = new ArrayList<Location>();
                     List<Location> puSpawn = new ArrayList<Location>();
 
-                    for(String s : mapConfig.getStringList("Locations.Team1Spawns")){
+                    for (String s : mapConfig.getStringList("Locations.Team1Spawns")) {
 
                         String[] split = s.split(":");
-                        Location loc = new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
+                        Location loc =
+                                new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
                         spawnOne.add(loc);
 
 
-
-
-
                     }
-                    if(spawnOne.size() < 1){
+                    if (spawnOne.size() < 1) {
 
                         System.out.println("[SplatFlag] No Team 1 spawns were loaded for map " + mapName + " :(");
 
-                    }else{
+                    } else {
 
-                        System.out.println("[SplatFlag] Loaded " + spawnOne.size() + " Team 1 Spawns for map " + mapName + "!");
+                        System.out.println(
+                                "[SplatFlag] Loaded " + spawnOne.size() + " Team 1 Spawns for map " + mapName + "!");
                         splatTeam1Spawns.put(mapName, spawnOne);
 
                     }
 
-                    System.out.println("[SplatFlag] Found " + mapConfig.getStringList("Locations.Team2Spawns").size() + " spawns for Team 2 for map. Attempting to load...");
+                    System.out.println("[SplatFlag] Found " + mapConfig.getStringList("Locations.Team2Spawns").size() +
+                            " spawns for Team 2 for map. Attempting to load...");
 
-                    for(String s : mapConfig.getStringList("Locations.Team2Spawns")){
+                    for (String s : mapConfig.getStringList("Locations.Team2Spawns")) {
 
                         String[] split = s.split(":");
-                        Location loc = new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
+                        Location loc =
+                                new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
                         spawnTwo.add(loc);
 
 
-
-
-
                     }
-                    if(spawnTwo.size() < 1){
+                    if (spawnTwo.size() < 1) {
 
                         System.out.println("[SplatFlag] No Team 2 spawns were loaded for map " + mapName + " :(");
 
-                    }else{
+                    } else {
 
-                        System.out.println("[SplatFlag] Loaded " + spawnTwo.size() + " Team 2 Spawns for map " + mapName + "!");
+                        System.out.println(
+                                "[SplatFlag] Loaded " + spawnTwo.size() + " Team 2 Spawns for map " + mapName + "!");
                         splatTeam2Spawns.put(mapName, spawnTwo);
 
                     }
 
-                    System.out.println("[SplatFlag] Found " + mapConfig.getStringList("Locations.PowerupSpawns").size() + " spawns for Powerups for map. Attempting to load...");
+                    System.out.println(
+                            "[SplatFlag] Found " + mapConfig.getStringList("Locations.PowerupSpawns").size() +
+                                    " spawns for Powerups for map. Attempting to load...");
 
-                    for(String s : mapConfig.getStringList("Locations.PowerupSpawns")){
+                    for (String s : mapConfig.getStringList("Locations.PowerupSpawns")) {
 
                         String[] split = s.split(":");
-                        Location loc = new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
+                        Location loc =
+                                new Location(w, Double.parseDouble(split[x]), Double.parseDouble(split[y]), Double.parseDouble(split[z]));
                         puSpawn.add(loc);
 
 
-
-
-
                     }
-                    if(puSpawn.size() < 1){
+                    if (puSpawn.size() < 1) {
 
                         System.out.println("[SplatFlag] No Powerup spawns were loaded for map " + mapName + " :(");
 
-                    }else{
+                    } else {
 
-                        System.out.println("[SplatFlag] Loaded " + puSpawn.size() + " Powerup Spawns for map " + mapName + "!");
+                        System.out.println(
+                                "[SplatFlag] Loaded " + puSpawn.size() + " Powerup Spawns for map " + mapName + "!");
                         splatPowerSpawns.put(mapName, puSpawn);
 
                     }
@@ -167,8 +169,9 @@ public class MapLoader {
 
                     String ban1String = mapConfig.getString("Locations.Banner1");
                     String[] ban1Split = ban1String.split(":");
-                    Location ban1 = new Location(w, Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]));
-                    if(ban1.getBlock() == null){
+                    Location ban1 =
+                            new Location(w, Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]));
+                    if (ban1.getBlock() == null) {
 
                         System.out.println("[SplatFlag] Banner 1 was not found :(");
 
@@ -178,8 +181,9 @@ public class MapLoader {
 
                     String ban2String = mapConfig.getString("Locations.Banner1");
                     String[] ban2Split = ban1String.split(":");
-                    Location ban2 = new Location(w, Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]));
-                    if(ban2.getBlock() == null){
+                    Location ban2 =
+                            new Location(w, Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]), Double.parseDouble(ban1Split[x]));
+                    if (ban2.getBlock() == null) {
 
                         System.out.println("[SplatFlag] Banner 2 was not found :(");
 
@@ -192,12 +196,14 @@ public class MapLoader {
                     String color1String = mapConfig.getString("Colors.Team1");
                     DyeColor color1 = DyeColor.valueOf(color1String);
                     splatTeam1Color.put(mapName, color1);
-                    System.out.println("[SplatFlag] Team 1 color is " + ChatColor.valueOf(color1.name()) + color1.name());
+                    System.out.println(
+                            "[SplatFlag] Team 1 color is " + ChatColor.valueOf(color1.name()) + color1.name());
 
                     String color2String = mapConfig.getString("Colors.Team2");
                     DyeColor color2 = DyeColor.valueOf(color1String);
                     splatTeam2Color.put(mapName, color2);
-                    System.out.println("[SplatFlag] Team 2 color is " + ChatColor.valueOf(color2.name()) + color2.name());
+                    System.out.println(
+                            "[SplatFlag] Team 2 color is " + ChatColor.valueOf(color2.name()) + color2.name());
 
                     System.out.println("[SplatFlag] Loading Armor Colors for " + mapName);
 
@@ -222,8 +228,6 @@ public class MapLoader {
                     System.out.println("[SplatFlag] Checking map size declarations for " + mapName);
 
 
-
-
                 }
 
             }
@@ -232,9 +236,9 @@ public class MapLoader {
 
     }
 
-    public static void loadSplatWorld(String name, String world){
+    public static void loadSplatWorld(String name, String world) {
 
-        if(Bukkit.getWorld(world) != null){
+        if (Bukkit.getWorld(world) != null) {
 
             splatMaps.put(name, Bukkit.getWorld(world));
 
@@ -242,9 +246,9 @@ public class MapLoader {
 
     }
 
-    public static Map<String, World> getSplatMaps(){
+    public static Map<String, World> getSplatMaps() {
 
-            return splatMaps;
+        return splatMaps;
 
 
     }
