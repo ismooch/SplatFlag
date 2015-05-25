@@ -4,16 +4,14 @@ package co.obam.ismooch.splatflag.objects;
 import co.obam.ismooch.splatflag.SplatFlag;
 import co.obam.ismooch.splatflag.creator.SplatMapBuilder;
 import co.obam.ismooch.splatflag.effects.SplatEffects;
+import co.obam.ismooch.splatflag.loader.MapLoader;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /*
  *This will be the command handler for the lobbies for SplatFlag
@@ -31,9 +29,174 @@ public class SplatLobby {
     private String status;
     private SplatMap map;
     private String mapChoice;
+    private List<String> mapChoices = new ArrayList<String>();
     private int taskID;
     private int snowball;
     private int check;
+    private int team1Score;
+    private int team2Score;
+
+    private static Map<String, SplatLobby> splatLobbies = new HashMap<String, SplatLobby>();
+    private static List<String> lobbyNames = new ArrayList<String>();
+    private static List<SplatLobby> activeLobbies = new ArrayList<SplatLobby>();
+
+    public static Map<SplatLobby, Integer> areReady = new HashMap<SplatLobby, Integer>();
+
+    public static void lobbyHandler(){
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(SplatFlag.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+
+                for(SplatLobby sl : SplatLobby.getLobbies()){
+
+                    sl.updateSigns();
+
+                    if(sl.isFull()){
+
+                        if(!SplatLobby.areReady.containsKey(sl)){
+
+                            areReady.put(sl, 0);
+                            sl.generateMap();
+
+
+                            for(UUID u : sl.getPlayerList()){
+
+                                Player p = Bukkit.getPlayer(u);
+
+                                p.sendRawMessage(ChatColor.GREEN + "SplatFlag will begin in " + ChatColor.YELLOW + "10 " + ChatColor.GREEN + "seconds!");
+
+                                p.playSound(p.getLocation(), Sound.NOTE_BASS, 1, 1);
+
+
+
+
+                            }
+
+                        }else if(SplatLobby.areReady.get(sl) < 10){
+
+                            areReady.put(sl, areReady.get(sl) + 1);
+
+                            if(!sl.isFull()){
+
+                                areReady.remove(sl);
+
+                                for(UUID u : sl.getPlayerList()){
+
+                                    Player p = Bukkit.getPlayer(u);
+
+                                    p.sendRawMessage(ChatColor.RED + "A player has left, the countdown has stopped.");
+
+
+
+                                }
+
+                            }else {
+
+                                for (UUID u : sl.getPlayerList()) {
+
+                                    Player p = Bukkit.getPlayer(u);
+
+                                    p.playSound(p.getLocation(), Sound.NOTE_BASS, 1, 1);
+
+                                }
+                            }
+
+                        }else {
+
+                            if (!sl.getStatus().equalsIgnoreCase(ChatColor.RED + "In Progress..")) {
+
+                                if(!sl.isFull()){
+
+                                    areReady.remove(sl);
+
+                                    for(UUID u : sl.getPlayerList()){
+
+                                        Player p = Bukkit.getPlayer(u);
+
+                                        p.sendRawMessage(ChatColor.RED + "A player has left, the countdown has stopped.");
+
+
+
+                                    }
+
+                                }else {
+                                    for (UUID u : sl.getPlayerList()) {
+
+                                        Player p = Bukkit.getPlayer(u);
+
+                                        p.sendRawMessage(ChatColor.GREEN + "SplatFlag will begin now!");
+
+                                        p.playSound(p.getLocation(), Sound.LEVEL_UP, 1, 1);
+
+                                    }
+
+                                    sl.startGame();
+                                }
+
+
+                            }else if(sl.getStatus().equalsIgnoreCase(ChatColor.RED + "Ending Game")){
+
+                                sl.getPlayerList().clear();
+
+                                sl.setMap(null);
+
+                                sl.setMapChoice(null);
+
+                                sl.setMapChoices(null);
+
+                                sl.setStatus(ChatColor.GREEN + "Open");
+
+
+                            }
+                        }
+
+                    }
+
+
+                }
+
+
+            }
+        }, 0L, 1 * 20L);
+
+
+    }
+
+    public SplatLobby(String name){
+
+        splatLobbies.put(name, this);
+        lobbyNames.add(name);
+        activeLobbies.add(this);
+
+    }
+
+    public static List<String> getLobbyNames(){
+
+
+        return lobbyNames;
+
+    }
+
+    public static List<SplatLobby> getLobbies(){
+
+        return activeLobbies;
+
+    }
+
+    public static SplatLobby getLobby(String name){
+
+        if (lobbyNames.contains(name)){
+
+            return splatLobbies.get(name);
+
+        }else{
+
+            return null;
+
+        }
+
+    }
 
     public int getPlayerCount() {
 
@@ -237,23 +400,57 @@ public class SplatLobby {
 
                 }
 
+                if (isFull()) {
 
-                if (size.equalsIgnoreCase("large")) {
+                    sign.setLine(2, ChatColor.RED + "Full");
 
-                    sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/14");
+                } else {
 
-                } else if (size.equalsIgnoreCase("medium")) {
 
-                    sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/10");
+                    if (size.equalsIgnoreCase("large")) {
 
-                } else if (size.equalsIgnoreCase("small")) {
+                        sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/14");
 
-                    sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/6");
+                    } else if (size.equalsIgnoreCase("medium")) {
+
+                        sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/10");
+
+                    } else if (size.equalsIgnoreCase("small")) {
+
+                        sign.setLine(2, ChatColor.DARK_AQUA + "" + playerCount + "/6");
+
+                    }
 
                 }
-
             }
 
+
+        }
+
+    }
+
+    public void getMapChoices(){
+
+        if(size.equalsIgnoreCase("large")){
+
+            if(MapLoader.splatMapsLarge.size() < 3){
+
+                mapChoices = MapLoader.splatMapsLarge;
+            }
+
+        }else if(size.equalsIgnoreCase("medium")){
+
+            if(MapLoader.splatMapsMedium.size() < 3){
+
+                mapChoices = MapLoader.splatMapsMedium;
+            }
+
+        }else if(size.equalsIgnoreCase("small")){
+
+            if(MapLoader.splatMapsSmall.size() < 3){
+
+                mapChoices = MapLoader.splatMapsSmall;
+            }
 
         }
 
@@ -285,6 +482,42 @@ public class SplatLobby {
 
     }
 
+    public int getTeam1Score(){
+
+        return team1Score;
+
+    }
+
+    public int getTeam2Score(){
+
+        return team2Score;
+
+    }
+
+    public void setTeam1Score(int i){
+
+        team1Score = i;
+
+    }
+
+    public void setTeam2Score(int i){
+
+        team2Score = i;
+
+    }
+
+    public void setMapChoice(String s){
+
+        mapChoice = s;
+
+    }
+
+    public void setMapChoices(List<String> sL){
+
+        mapChoices = sL;
+
+    }
+
     public void startGame() {
 
         status = String.valueOf(ChatColor.RED + "In Progress");
@@ -307,6 +540,7 @@ public class SplatLobby {
                     sp.setArmorColor(map.getTeam1Color());
                     sp.setSplatMap(map);
                     sp.setColor(map.getTeam1BanColor());
+                    sp.setLobby(this);
 
 
                 } else {
@@ -316,6 +550,7 @@ public class SplatLobby {
                     sp.setArmorColor(map.getTeam2Color());
                     sp.setSplatMap(map);
                     sp.setColor(map.getTeam2BanColor());
+                    sp.setLobby(this);
 
                 }
 
@@ -326,6 +561,7 @@ public class SplatLobby {
                 sp.setArmorColor(map.getTeam2Color());
                 sp.setSplatMap(map);
                 sp.setColor(map.getTeam2BanColor());
+                sp.setLobby(this);
 
             } else if (map.getTeam2().size() > map.getTeam1().size()) {
 
@@ -334,6 +570,7 @@ public class SplatLobby {
                 sp.setArmorColor(map.getTeam1Color());
                 sp.setSplatMap(map);
                 sp.setColor(map.getTeam1BanColor());
+                sp.setLobby(this);
 
             }
 
@@ -470,6 +707,14 @@ public class SplatLobby {
 
     public void endGame() {
 
+        for (UUID u : getPlayerList()){
+
+            Player p = Bukkit.getPlayer(u);
+
+            p.teleport(SplatFlag.spawn);
+
+        }
+
         Bukkit.getScheduler().cancelTask(taskID);
         status = String.valueOf(ChatColor.RED + "Ending Game");
         File file = map.getWorld().getWorldFolder();
@@ -479,6 +724,8 @@ public class SplatLobby {
 
 
     }
+
+
 
 
 }

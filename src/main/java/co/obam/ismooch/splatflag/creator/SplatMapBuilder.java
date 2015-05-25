@@ -42,9 +42,6 @@ public class SplatMapBuilder {
 
         World sourceWorld = MapLoader.splatMaps.get(name);
 
-        Bukkit.createWorld(new WorldCreator(worldname));
-
-
         World targetWorld = Bukkit.getWorld(worldname);
 
         File target = targetWorld.getWorldFolder();
@@ -124,11 +121,11 @@ public class SplatMapBuilder {
     public static boolean deleteWorld(File path) {
         if (path.exists()) {
             File files[] = path.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteWorld(files[i]);
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteWorld(f);
                 } else {
-                    files[i].delete();
+                    f.delete();
                 }
             }
         }

@@ -30,8 +30,8 @@ public class MapLoader {
     public static Map<String, List<Integer>> splatArmor1Color = new HashMap<String, List<Integer>>();
     public static Map<String, List<Integer>> splatArmor2Color = new HashMap<String, List<Integer>>();
     public static List<String> splatMapsLarge = new ArrayList<String>();
-    public static List<String> splatMapMedium = new ArrayList<String>();
-    public static List<String> splatMapSmall = new ArrayList<String>();
+    public static List<String> splatMapsMedium = new ArrayList<String>();
+    public static List<String> splatMapsSmall = new ArrayList<String>();
 
 
     public static void loadWorlds() {
@@ -226,6 +226,26 @@ public class MapLoader {
                     splatArmor2Color.put(mapName, armor2);
 
                     System.out.println("[SplatFlag] Checking map size declarations for " + mapName);
+
+                    List<String> sizes = mapConfig.getStringList("Sizes");
+
+                    for(String s : sizes){
+
+                        if(s.equalsIgnoreCase("large")){
+
+                            splatMapsLarge.add(mapName);
+
+                        }else if(s.equalsIgnoreCase("medium")){
+
+                            splatMapsMedium.add(mapName);
+
+                        }else if(s.equalsIgnoreCase("small")){
+
+                            splatMapsSmall.add(mapName);
+
+                        }
+
+                    }
 
 
                 }

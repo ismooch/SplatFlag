@@ -1,10 +1,10 @@
 package co.obam.ismooch.splatflag;
 
-import co.obam.ismooch.splatflag.event.Click;
-import co.obam.ismooch.splatflag.event.PickUp;
-import co.obam.ismooch.splatflag.event.ProjectileHit;
+import co.obam.ismooch.splatflag.effects.SplatEffects;
+import co.obam.ismooch.splatflag.event.*;
+import co.obam.ismooch.splatflag.loader.MapLoader;
+import co.obam.ismooch.splatflag.objects.SplatPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -17,11 +17,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -30,28 +28,14 @@ import java.util.*;
 public class SplatFlag extends JavaPlugin implements Listener {
 
 
-    public static List<Location> powerUps = new ArrayList<Location>();
-    public static List<Location> team1Spawn = new ArrayList<Location>();
-    public static List<Location> team2Spawn = new ArrayList<Location>();
     public static List<String> splatLobbies = new ArrayList<String>();
     public static Map<String, String> splatLobbiesSize = new HashMap<String, String>();
     public static Map<String, Location> splatLobbiesSpawns = new HashMap<String, Location>();
     public static Map<String, List<Location>> splatLobbySigns = new HashMap<String, List<Location>>();
-    public static Location team1Ban;
-    public static Location team2Ban;
-    public static Map<UUID, Integer> powerUpHit = new HashMap<UUID, Integer>();
-    public static List<Player> team1 = new ArrayList<Player>();
-    public static List<Player> team2 = new ArrayList<Player>();
-    public static Map<Player, Player> playerHit = new HashMap<Player, Player>();
     static SplatFlag plugin;
-    public static int check = 0;
-    public static boolean balls = true;
-    public static int team1Respawn = 15;
-    public static int team2Respawn = 15;
-    public static List<Player> playerShields = new ArrayList<Player>();
+    public static Location spawn;
 
 
-    public static boolean sfOn;
 
 
     public static SplatFlag getPlugin() {
@@ -61,278 +45,23 @@ public class SplatFlag extends JavaPlugin implements Listener {
     }
 
 
-    private static List<Location> splash(Location l, Integer team) {
-        World w = l.getWorld();
-        int xCoord = (int) l.getX();
-        int zCoord = (int) l.getZ();
-        int yCoord = (int) l.getY();
 
-        List<Location> tempList = new ArrayList<Location>();
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                for (int y = -1; y <= 1; y++) {
 
-                    Location loc = new Location(w, xCoord + x, yCoord + y, zCoord + z);
-                    if (team == 1 && (loc.getBlock().getType().equals(Material.QUARTZ_BLOCK) ||
-                            loc.getBlock().getType().equals(Material.STAINED_CLAY))) {
 
-                        if (new Random().nextInt(100) < 50) {
-                            loc.getBlock().setType(Material.STAINED_CLAY);
-                            loc.getBlock().setData((byte) 4);
-                        }
 
-                    } else if (team == 2 && (loc.getBlock().getType().equals(Material.QUARTZ_BLOCK) ||
-                            loc.getBlock().getType().equals(Material.STAINED_CLAY))) {
 
-                        if (new Random().nextInt(100) < 50) {
-                            loc.getBlock().setType(Material.STAINED_CLAY);
-                            loc.getBlock().setData((byte) 3);
-                        }
-                    }
-                }
-
-
-            }
-        }
-        return tempList;
-    }
-
-
-    public static void spawnTeam1(Player p) {
-
-
-        int red = 255;
-        int green = 195;
-        int blue = 53;
-
-        Location loc = team1Spawn.get(new Random().nextInt(team1Spawn.size()));
-        loc = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1, loc.getZ());
-
-
-        ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
-        LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lhelmet.setItemMeta(lam);
-
-        ItemStack lchest = new ItemStack(Material.LEATHER_CHESTPLATE);
-        lam = (LeatherArmorMeta) lchest.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lchest.setItemMeta(lam);
-
-        ItemStack llegs = new ItemStack(Material.LEATHER_LEGGINGS);
-        lam = (LeatherArmorMeta) llegs.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        llegs.setItemMeta(lam);
-
-        ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS);
-        lam = (LeatherArmorMeta) lboots.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lboots.setItemMeta(lam);
-
-        p.getInventory().setHelmet(lhelmet);
-        p.getInventory().setChestplate(lchest);
-        p.getInventory().setLeggings(llegs);
-        p.getInventory().setBoots(lboots);
-
-        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
-        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
-
-        p.teleport(loc);
-
-
-    }
-
-    public static void respawn(final Player p, final int team) {
-
-        if (team == 1) {
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-
-
-                    spawnTeam1(p);
-                    p.setGameMode(GameMode.SURVIVAL);
-                    p.sendRawMessage(ChatColor.GREEN + "You have respawned!");
-
-
-                }
-            }, team1Respawn * 20);
-        } else if (team == 2) {
-
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-
-
-                    spawnTeam2(p);
-                    p.setGameMode(GameMode.SURVIVAL);
-                    p.sendRawMessage(ChatColor.GREEN + "You have respawned!");
-
-
-                }
-            }, team2Respawn * 20);
-        }
-
-    }
-
-    public static void banRespawn(final int team) {
-
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-
-                if (team == 1) {
-
-                    spawnBanner(2);
-
-                } else if (team == 2) {
-
-                    spawnBanner(1);
-
-                }
-            }
-        }, 30 * 20L);
-
-    }
-
-    public static String teamReturn(Player p) {
-
-        if (team1.contains(p)) {
-
-            return "team1";
-
-        } else if (team2.contains(p)) {
-
-            return "team2";
-
-        } else {
-
-            return null;
-        }
-
-    }
-
-    public static void spawnTeam2(Player p) {
-
-        int red = 0;
-        int green = 128;
-        int blue = 255;
-
-        Location loc = team2Spawn.get(new Random().nextInt(team2Spawn.size()));
-        loc = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1, loc.getZ());
-
-        ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
-        LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lhelmet.setItemMeta(lam);
-
-        ItemStack lchest = new ItemStack(Material.LEATHER_CHESTPLATE);
-        lam = (LeatherArmorMeta) lchest.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lchest.setItemMeta(lam);
-
-        ItemStack llegs = new ItemStack(Material.LEATHER_LEGGINGS);
-        lam = (LeatherArmorMeta) llegs.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        llegs.setItemMeta(lam);
-
-        ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS);
-        lam = (LeatherArmorMeta) lboots.getItemMeta();
-        lam.setColor(Color.fromRGB(red, green, blue));
-        lboots.setItemMeta(lam);
-
-        p.getInventory().setHelmet(lhelmet);
-        p.getInventory().setChestplate(lchest);
-        p.getInventory().setLeggings(llegs);
-        p.getInventory().setBoots(lboots);
-
-
-        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
-        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
-
-        p.teleport(loc);
-
-
-    }
-
-    public static void spawnBanner(int i) {
-
-
-        if (i == 1) {
-
-            Location loc = new Location(team1Ban.getWorld(), team1Ban.getX(), team1Ban.getY() + 1, team1Ban.getZ());
-            ;
-            Banner ban = (Banner) loc.getBlock().getState();
-            ban.setBaseColor(DyeColor.BLUE);
-            ban.update();
-
-            for (Player player : team2) {
-
-                player.sendRawMessage(ChatColor.GREEN + "Your flag has returned!");
-
-            }
-
-            for (Player player : team1) {
-
-                player.sendRawMessage(ChatColor.GREEN + "The enemy's flag has returned!");
-
-            }
-
-        } else {
-
-            Location loc = new Location(team2Ban.getWorld(), team2Ban.getX(), team2Ban.getY() + 1, team2Ban.getZ());
-            Banner ban = (Banner) loc.getBlock().getState();
-            ban.setBaseColor(DyeColor.YELLOW);
-            ban.update();
-
-
-            for (Player player : team1) {
-
-                player.sendRawMessage(ChatColor.GREEN + "Your flag has returned!");
-
-            }
-
-            for (Player player : team2) {
-
-                player.sendRawMessage(ChatColor.GREEN + "The enemy's flag has returned!");
-
-            }
-        }
-
-    }
-
-
-    @EventHandler
-    public static void onLaunch(ProjectileLaunchEvent e) {
-
-        if (!balls) {
-
-            e.setCancelled(true);
-            if (e.getEntity().getShooter() instanceof Player) {
-
-                ((Player) e.getEntity().getShooter()).sendRawMessage(
-                        ChatColor.RED + "Projectiles can not be launched right now!");
-
-            }
-
-        }
-
-    }
 
     @EventHandler
     public static void onHit(ProjectileHitEvent e) {
 
-        if (team1.contains(e.getEntity().getShooter())) {
+        if (SplatPlayer.getInstanceOfPlayer((Player) e.getEntity()).getTeam() == 1) {
 
 
-            splash(e.getEntity().getLocation(), 1);
+            SplatEffects.splash(e.getEntity().getLocation(), SplatPlayer.getInstanceOfPlayer((Player) e.getEntity()), 1);
 
-        } else if (team2.contains(e.getEntity().getShooter())) {
+        } else if (SplatPlayer.getInstanceOfPlayer((Player) e.getEntity()).getTeam() == 2) {
 
-            splash(e.getEntity().getLocation(), 2);
+            SplatEffects.splash(e.getEntity().getLocation(), SplatPlayer.getInstanceOfPlayer((Player) e.getEntity()), 2);
 
         }
 
@@ -355,12 +84,8 @@ public class SplatFlag extends JavaPlugin implements Listener {
     @EventHandler
     public static void onDrop(PlayerDropItemEvent e) {
 
-        if (sfOn) {
 
             e.setCancelled(true);
-
-        }
-
 
     }
 
@@ -396,9 +121,7 @@ public class SplatFlag extends JavaPlugin implements Listener {
 
         if (!e.getPlayer().hasPermission("obam.smod")) {
 
-            if (sfOn) {
-                e.setCancelled(true);
-            }
+            e.setCancelled(true);
 
         }
 
@@ -407,7 +130,7 @@ public class SplatFlag extends JavaPlugin implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
 
-        if (sfOn) {
+        if (!e.getWhoClicked().hasPermission("obam.smod")) {
 
             e.setCancelled(true);
 
@@ -419,11 +142,17 @@ public class SplatFlag extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+        this.saveDefaultConfig();
+
         plugin = this;
 
         getServer().getPluginManager().registerEvents(new PickUp(), this);
         getServer().getPluginManager().registerEvents(new Click(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHit(), this);
+        getServer().getPluginManager().registerEvents(new Disconnect(), this);
+        getServer().getPluginManager().registerEvents(new Join(), this);
+
+        MapLoader.loadWorlds();
 
         Configuration config = getConfig();
 
@@ -472,10 +201,8 @@ public class SplatFlag extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(this, this);
 
-        this.saveDefaultConfig();
 
-        Location loc =
-                new Location(Bukkit.getWorld("splatflag"), this.getConfig().getDouble("Flagstone.x"), this.getConfig().getDouble("Flagstone.y"), this.getConfig().getDouble("Flagstone.z"));
+
 
 
     }

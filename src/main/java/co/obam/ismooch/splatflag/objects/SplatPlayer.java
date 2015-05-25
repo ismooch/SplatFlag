@@ -3,10 +3,7 @@ package co.obam.ismooch.splatflag.objects;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * The SplatPlayer wrapper for easy
@@ -30,6 +27,9 @@ public class SplatPlayer {
     private int protects;
     private int captures;
     private boolean shield;
+    private SplatLobby lobby;
+    private boolean hit;
+    private UUID assistOn;
 
     private SplatMap splatMap;
 
@@ -40,6 +40,16 @@ public class SplatPlayer {
 
         player = p;
         splatPlayers.put(p, this);
+
+    }
+
+    public static void removePlayer(Player p){
+
+        if(splatPlayers.containsKey(p)){
+
+            splatPlayers.remove(p);
+
+        }
 
     }
 
@@ -234,6 +244,43 @@ public class SplatPlayer {
     public void setShield(boolean b) {
 
         shield = b;
+
+    }
+
+    public void setLobby(SplatLobby lobby){
+
+        this.lobby = lobby;
+
+    }
+
+    public SplatLobby getLobby(){
+
+        return lobby;
+
+    }
+
+    public void setHit(boolean bool){
+
+        hit = bool;
+
+    }
+
+    public boolean isHit(){
+
+        return hit;
+
+    }
+
+    public void setAssistOn(UUID u){
+
+        assistOn = u;
+
+    }
+
+
+    public UUID getAssistOn(){
+
+        return assistOn;
 
     }
 

@@ -10,5 +10,7 @@ lobby-locations:
   lobby1: world:0:64:0
 lobby-signs:
   lobby1:
+    - world:0:64:0
+    - world:0:64:0
 lobby-size:
   lobby1: medium

@@ -1,14 +1,16 @@
 package co.obam.ismooch.splatflag.effects;
 
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import co.obam.ismooch.splatflag.objects.SplatPlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-/**
- * Created by troyj_000 on 5/22/2015.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+
 public class SplatEffects {
 
 
@@ -51,6 +53,42 @@ public class SplatEffects {
         fw.setFireworkMeta(meta);
 
 
+    }
+
+    public static void splash(Location l, SplatPlayer sp, Integer team) {
+        World w = l.getWorld();
+        int xCoord = (int) l.getX();
+        int zCoord = (int) l.getZ();
+        int yCoord = (int) l.getY();
+
+        List<Location> tempList = new ArrayList<Location>();
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int y = -1; y <= 1; y++) {
+
+                    Location loc = new Location(w, xCoord + x, yCoord + y, zCoord + z);
+                    if (sp.getTeam() == 1 && (loc.getBlock().getType().equals(Material.QUARTZ_BLOCK) ||
+                            loc.getBlock().getType().equals(Material.STAINED_CLAY))) {
+
+                        if (new Random().nextInt(100) < 50) {
+                            loc.getBlock().setType(Material.STAINED_CLAY);
+
+                            loc.getBlock().setData(sp.getSplatMap().getTeam1BanColor().getDyeData());
+                        }
+
+                    } else if (sp.getTeam() == 2 && (loc.getBlock().getType().equals(Material.QUARTZ_BLOCK) ||
+                            loc.getBlock().getType().equals(Material.STAINED_CLAY))) {
+
+                        if (new Random().nextInt(100) < 50) {
+                            loc.getBlock().setType(Material.STAINED_CLAY);
+                            loc.getBlock().setData(sp.getSplatMap().getTeam2BanColor().getDyeData());
+                        }
+                    }
+                }
+
+
+            }
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package co.obam.ismooch.splatflag.objects;
 
+import co.obam.ismooch.splatflag.SplatFlag;
 import org.bukkit.*;
+import org.bukkit.block.Banner;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -23,6 +25,8 @@ public class SplatMap {
     private List<Integer> team2Color;
     private DyeColor team1BanColor;
     private DyeColor team2BanColor;
+    private int team1Respawn;
+    private int team2Respawn;
     private int Red = 0;
     private int Green = 1;
     private int Blue = 2;
@@ -46,7 +50,14 @@ public class SplatMap {
             power.setCustomName(ChatColor.YELLOW + "Speed Buff");
             powerUpHit.put(power.getUniqueId(), 0);
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
+            for (Player p : getTeam1()) {
+
+                p.sendRawMessage(
+                        ChatColor.GOLD + "A " + ChatColor.YELLOW + "Speed " + ChatColor.GOLD + "powerup has spawned!");
+
+            }
+
+            for (Player p : getTeam2()) {
 
                 p.sendRawMessage(
                         ChatColor.GOLD + "A " + ChatColor.YELLOW + "Speed " + ChatColor.GOLD + "powerup has spawned!");
@@ -59,7 +70,14 @@ public class SplatMap {
             power.setCustomName(ChatColor.YELLOW + "Shield");
             powerUpHit.put(power.getUniqueId(), 0);
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
+            for (Player p : getTeam1()) {
+
+                p.sendRawMessage(
+                        ChatColor.GOLD + "A " + ChatColor.YELLOW + "Shield " + ChatColor.GOLD + "powerup has spawned!");
+
+            }
+
+            for (Player p : getTeam2()) {
 
                 p.sendRawMessage(
                         ChatColor.GOLD + "A " + ChatColor.YELLOW + "Shield " + ChatColor.GOLD + "powerup has spawned!");
@@ -72,7 +90,14 @@ public class SplatMap {
             power.setCustomName(ChatColor.YELLOW + "Reduced Respawn");
             powerUpHit.put(power.getUniqueId(), 0);
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
+            for (Player p : getTeam1()) {
+
+                p.sendRawMessage(ChatColor.GOLD + "A " + ChatColor.YELLOW + "Respawn " + ChatColor.GOLD +
+                        "powerup has spawned!");
+
+            }
+
+            for (Player p : getTeam2()) {
 
                 p.sendRawMessage(ChatColor.GOLD + "A " + ChatColor.YELLOW + "Respawn " + ChatColor.GOLD +
                         "powerup has spawned!");
@@ -85,7 +110,14 @@ public class SplatMap {
             power.setCustomName(ChatColor.YELLOW + "Mega Reload");
             powerUpHit.put(power.getUniqueId(), 0);
 
-            for (Player p : Bukkit.getOnlinePlayers()) {
+            for (Player p : getTeam1()) {
+
+                p.sendRawMessage(
+                        ChatColor.GOLD + "A " + ChatColor.YELLOW + "Reload " + ChatColor.GOLD + "powerup has spawned!");
+
+            }
+
+            for (Player p : getTeam2()) {
 
                 p.sendRawMessage(
                         ChatColor.GOLD + "A " + ChatColor.YELLOW + "Reload " + ChatColor.GOLD + "powerup has spawned!");
@@ -98,6 +130,153 @@ public class SplatMap {
 
     }
 
+    public void spawnBanner(int i){
+
+        final SplatMap sm = this;
+        if(i == 1){
+
+            for(Player p : getTeam1()){
+
+                p.sendRawMessage(ChatColor.GREEN + "Your flag will respawn in " + ChatColor.YELLOW + "30 " + ChatColor.GREEN + "seconds!");
+
+            }
+
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                {
+
+                    Location loc = new Location(sm.getTeam1Ban().getWorld(), sm.getTeam1Ban().getX(), sm.getTeam1Ban().getY() + 1, sm.getTeam1Ban().getZ());
+
+                    Banner ban = (Banner) loc.getBlock().getState();
+                    ban.setBaseColor(sm.getTeam1BanColor());
+                    ban.update();
+
+                    for(Player p : sm.getTeam1()){
+
+                        p.sendRawMessage(ChatColor.GREEN + "Your flag has respawned!");
+
+                    }
+
+                    for(Player p : sm.getTeam2()){
+
+                        p.sendRawMessage(ChatColor.GREEN + "The enemy flag has respawned!");
+
+                    }
+
+
+                }
+
+
+            }
+        }, 30 * 20L);
+
+    }else if(i == 2){
+
+            for(Player p : getTeam2()){
+
+                p.sendRawMessage(ChatColor.GREEN + "Your flag will respawn in " + ChatColor.YELLOW + "30 " + ChatColor.GREEN + "seconds!");
+
+            }
+
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    {
+
+                        Location loc = new Location(sm.getTeam2Ban().getWorld(), sm.getTeam2Ban().getX(), sm.getTeam2Ban().getY() + 1, sm.getTeam2Ban().getZ());
+
+                        Banner ban = (Banner) loc.getBlock().getState();
+                        ban.setBaseColor(sm.getTeam2BanColor());
+                        ban.update();
+
+                        for(Player p : sm.getTeam2()){
+
+                            p.sendRawMessage(ChatColor.GREEN + "Your flag has respawned!");
+
+                        }
+
+                        for(Player p : sm.getTeam1()){
+
+                            p.sendRawMessage(ChatColor.GREEN + "The enemy flag has respawned!");
+
+                        }
+
+
+                    }
+
+
+                }
+            }, 30 * 20L);
+
+        }
+
+    }
+
+
+    public void respawn(final Player p, final int team) {
+
+        final SplatMap sm = this;
+
+        if (team == 1) {
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+
+
+                    sm.spawnTeam1(p);
+                    p.setGameMode(GameMode.SURVIVAL);
+                    p.sendRawMessage(ChatColor.GREEN + "You have respawned!");
+
+
+                }
+            }, getTeam1Respawn() * 20);
+        } else if (team == 2) {
+
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SplatFlag.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+
+
+                    sm.spawnTeam2(p);
+                    p.setGameMode(GameMode.SURVIVAL);
+                    p.sendRawMessage(ChatColor.GREEN + "You have respawned!");
+
+
+                }
+            }, getTeam2Respawn() * 20);
+        }
+
+    }
+
+
+    public void setTeam1Respawn(int i){
+
+        team1Respawn = i;
+
+    }
+
+    public void setTeam2Respawn(int i){
+
+        team2Respawn = i;
+
+    }
+
+    public int getTeam1Respawn(){
+
+        return team1Respawn;
+
+    }
+
+    public int getTeam2Respawn(){
+
+        return team2Respawn;
+
+    }
 
     public List<Location> getTeam1Spawn() {
 
@@ -357,6 +536,26 @@ public class SplatMap {
 
     }
 
+    public void removeFromTeam1(Player p){
+
+        if(team1.contains(p)){
+
+            team1.remove(p);
+
+        }
+
+    }
+
+    public void removeFromTeam2(Player p){
+
+        if(team2.contains(p)){
+
+            team2.remove(p);
+
+        }
+
+    }
+
     public List<Player> getTeam1() {
 
         return team1;
@@ -383,29 +582,13 @@ public class SplatMap {
 
     public boolean isTeam1(Player p) {
 
-        if (team1.contains(p)) {
-
-            return true;
-
-        } else {
-
-            return false;
-        }
+        return team1.contains(p);
 
     }
 
     public boolean isTeam2(Player p) {
 
-        if (team2.contains(p)) {
-
-            return true;
-
-        } else {
-
-            return false;
-
-        }
-
+        return team2.contains(p);
     }
 
     public SplatMap getInstance() {
@@ -429,6 +612,30 @@ public class SplatMap {
     public Map<UUID, Integer> getPowerUpHit() {
 
         return powerUpHit;
+
+    }
+
+    public void spawnBan(int i){
+
+        if(i == 1){
+
+            Location loc = new Location(getTeam1Ban().getWorld(), getTeam1Ban().getX(), getTeam1Ban().getY() + 1, getTeam1Ban().getZ());
+
+            Banner ban = (Banner) loc.getBlock().getState();
+            ban.setBaseColor(getTeam1BanColor());
+            ban.update();
+
+
+        }else if(i == 2){
+
+            Location loc = new Location(getTeam2Ban().getWorld(), getTeam2Ban().getX(), getTeam2Ban().getY() + 1, getTeam2Ban().getZ());
+
+            Banner ban = (Banner) loc.getBlock().getState();
+            ban.setBaseColor(getTeam2BanColor());
+            ban.update();
+
+
+        }
 
     }
 
